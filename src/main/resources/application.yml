@@ -1,0 +1,5 @@
+files:
+    basePath: "/home/moncef/Bureau/Double Diplomation/Semaine2/Jour4/grails_emsi_24_25/grails-app/assets/images/"
+    baseUrl: "http://localhost:8080/assets/"
+server:
+    port: 8081
