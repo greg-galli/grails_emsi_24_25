@@ -1,11 +1,14 @@
 package emsi.mbds.todolist
 
+import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
 
+@Secured('ROLE_ADMIN')
 class TodoController {
 
     TodoService todoService
+    UploadService uploadService
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
@@ -30,6 +33,8 @@ class TodoController {
 
         try {
             todoService.save(todo)
+            // TODO: Ajouter la logique d'ajout d'élément dans la Todolist
+            // TODO : Il va aussi falloir gérer ici l'upload d'image, que l'on va déléguer à un service qui sera en charge de ça
         } catch (ValidationException e) {
             respond todo.errors, view:'create'
             return

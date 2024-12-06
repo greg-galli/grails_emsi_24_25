@@ -1,8 +1,10 @@
 package emsi.mbds.todolist
 
+import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
 
+@Secured('ROLE_ADMIN')
 class UserController {
 
     UserService userService
@@ -19,7 +21,8 @@ class UserController {
     }
 
     def create() {
-        respond new User(params)
+        def roleList = Role.list()
+        respond new User(params), model: [roleList:roleList]
     }
 
     def save(User user) {
@@ -29,7 +32,15 @@ class UserController {
         }
 
         try {
-            userService.save(user)
+            User.withTransaction {
+                userService.save(user)
+                def roleId = params.role
+                if (roleId)
+                {
+                    def roleInstance = Role.get(roleId)
+                    UserRole.create(user, roleInstance, true)
+                }
+            }
         } catch (ValidationException e) {
             respond user.errors, view:'create'
             return
